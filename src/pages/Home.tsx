@@ -64,8 +64,8 @@ const Home = () => {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background"></div>
-        <div className="container mx-auto px-4 relative z-10 text-center animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+        <div className="container mx-auto px-4 relative z-10 text-center animate-scale-up">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-glow-pulse">
             Edi Sokenou
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4">
@@ -74,14 +74,14 @@ const Home = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Je transforme vos idées en applications web performantes et modernes
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex gap-4 justify-center flex-wrap animate-slide-in-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
             <NavLink to="/projects">
-              <Button size="lg" className="gradient-accent text-white hover:shadow-glow transition-smooth">
+              <Button size="lg" className="gradient-accent text-white hover:shadow-glow hover:scale-105 transition-smooth">
                 Voir mes projets
               </Button>
             </NavLink>
             <NavLink to="/contact">
-              <Button size="lg" variant="outline" className="hover:bg-secondary transition-smooth">
+              <Button size="lg" variant="outline" className="hover:bg-secondary hover:scale-105 transition-smooth">
                 Me contacter
               </Button>
             </NavLink>
@@ -93,14 +93,14 @@ const Home = () => {
       <section className="py-20 gradient-subtle">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in">
+            <div className="animate-slide-in-left">
               <img
                 src={profilePhoto}
                 alt="Edi Sokenou"
-                className="rounded-2xl shadow-strong w-full max-w-md mx-auto hover:shadow-glow transition-smooth"
+                className="rounded-2xl shadow-strong w-full max-w-md mx-auto hover:shadow-glow hover:scale-105 transition-smooth"
               />
             </div>
-            <div className="animate-fade-in">
+            <div className="animate-slide-in-right">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">À Propos de Moi</h2>
               <p className="text-muted-foreground mb-4 text-lg">
                 Développeur web fullstack passionné avec une expertise en technologies modernes. 
@@ -111,7 +111,7 @@ const Home = () => {
                 livrer des solutions qui dépassent les attentes.
               </p>
               <NavLink to="/about">
-                <Button variant="outline" className="hover:bg-secondary transition-smooth">
+                <Button variant="outline" className="hover:bg-secondary hover:scale-105 transition-smooth">
                   En savoir plus sur moi
                 </Button>
               </NavLink>
@@ -128,10 +128,10 @@ const Home = () => {
             {technologies.map((tech, index) => (
               <div
                 key={tech.name}
-                className="flex flex-col items-center gap-2 animate-fade-in hover:scale-110 transition-smooth"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="flex flex-col items-center gap-2 animate-scale-up hover:scale-110 transition-smooth"
+                style={{ animationDelay: `${index * 0.1}s`, animationFillMode: "both" }}
               >
-                <div className="w-20 h-20 rounded-full bg-card shadow-soft flex items-center justify-center hover:shadow-strong transition-smooth">
+                <div className="w-20 h-20 rounded-full bg-card shadow-soft flex items-center justify-center hover:shadow-glow hover:animate-bounce-slow transition-smooth">
                   <span className={`text-2xl font-bold ${tech.color}`}>{tech.name[0]}</span>
                 </div>
                 <span className="text-sm font-medium text-muted-foreground">{tech.name}</span>
@@ -149,10 +149,10 @@ const Home = () => {
             {features.map((feature, index) => (
               <Card
                 key={feature.title}
-                className="p-6 hover:shadow-strong transition-smooth animate-fade-in bg-card"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="p-6 hover:shadow-glow hover:scale-105 transition-smooth animate-slide-in-up bg-card"
+                style={{ animationDelay: `${index * 0.1}s`, animationFillMode: "both" }}
               >
-                <feature.icon className="w-12 h-12 text-accent mb-4" />
+                <feature.icon className="w-12 h-12 text-accent mb-4 animate-float" />
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
               </Card>
@@ -171,7 +171,7 @@ const Home = () => {
             Discutons de votre prochain projet et créons quelque chose d'extraordinaire ensemble.
           </p>
           <NavLink to="/contact">
-            <Button size="lg" className="gradient-accent text-white hover:shadow-glow transition-smooth">
+            <Button size="lg" className="gradient-accent text-white hover:shadow-glow hover:scale-110 transition-smooth animate-glow-pulse">
               Démarrons un projet
             </Button>
           </NavLink>
