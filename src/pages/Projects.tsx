@@ -10,9 +10,9 @@ import taskManagerImg from "@/assets/project-taskmanager.jpg";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 
 const Projects = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Tout");
+  const [selectedStatus, setSelectedStatus] = useState("Tout");
 
-  const categories = ["Tout", "Fullstack", "Frontend", "Backend"];
+  const statuses = ["Tout", "En cours", "Terminé"];
 
   const projects = [
     {
@@ -21,7 +21,8 @@ const Projects = () => {
       description: "Application e-commerce complète avec panier, paiements et gestion des commandes.",
       image: ecommerceImg,
       technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-      category: "Fullstack",
+      status: "Terminé",
+      liveUrl: "https://ecommerce-demo.example.com",
     },
     {
       id: 2,
@@ -29,7 +30,8 @@ const Projects = () => {
       description: "Outil de gestion de projets avec tableaux Kanban et collaboration en temps réel.",
       image: taskManagerImg,
       technologies: ["Vue.js", "Firebase", "Tailwind"],
-      category: "Fullstack",
+      status: "En cours",
+      liveUrl: "https://taskmanager-demo.example.com",
     },
     {
       id: 3,
@@ -37,14 +39,15 @@ const Projects = () => {
       description: "Site portfolio moderne avec animations fluides et design sur mesure.",
       image: portfolioImg,
       technologies: ["React", "Framer Motion", "Next.js"],
-      category: "Frontend",
+      status: "Terminé",
+      liveUrl: "https://portfolio-demo.example.com",
     },
   ];
 
   const filteredProjects =
-    selectedCategory === "Tout"
+    selectedStatus === "Tout"
       ? projects
-      : projects.filter((p) => p.category === selectedCategory);
+      : projects.filter((p) => p.status === selectedStatus);
 
   return (
     <div className="min-h-screen">
@@ -66,18 +69,18 @@ const Projects = () => {
       <section className="py-12 bg-background sticky top-16 z-40 border-b border-border shadow-soft">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
-            {categories.map((category) => (
+            {statuses.map((status) => (
               <Button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                variant={selectedCategory === category ? "default" : "outline"}
+                key={status}
+                onClick={() => setSelectedStatus(status)}
+                variant={selectedStatus === status ? "default" : "outline"}
                 className={
-                  selectedCategory === category
+                  selectedStatus === status
                     ? "gradient-accent text-white"
                     : "hover:bg-secondary"
                 }
               >
-                {category}
+                {status}
               </Button>
             ))}
           </div>
@@ -89,36 +92,59 @@ const Projects = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project, index) => (
-              <NavLink key={project.id} to={`/project/${project.id}`}>
-                <Card
-                  className="overflow-hidden hover:shadow-strong transition-smooth cursor-pointer group animate-fade-in bg-card"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-smooth"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-smooth flex items-end justify-center pb-4">
-                      <span className="text-white font-semibold">Voir le projet →</span>
-                    </div>
+              <Card
+                key={project.id}
+                className="overflow-hidden hover:shadow-strong transition-smooth group animate-fade-in bg-card"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-64 object-cover group-hover:scale-110 transition-smooth"
+                  />
+                  <Badge 
+                    className="absolute top-4 right-4 bg-primary text-primary-foreground"
+                    variant={project.status === "Terminé" ? "default" : "secondary"}
+                  >
+                    {project.status}
+                  </Badge>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-smooth">
+                    {project.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 text-sm">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.technologies.map((tech) => (
+                      <Badge key={tech} variant="secondary" className="text-xs">
+                        {tech}
+                      </Badge>
+                    ))}
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-smooth">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground mb-4 text-sm">{project.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.map((tech) => (
-                        <Badge key={tech} variant="secondary" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
+                  <div className="flex gap-2">
+                    <Button
+                      asChild
+                      variant="default"
+                      className="flex-1 gradient-accent text-white"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                        Voir le projet
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <NavLink to={`/project/${project.id}`}>
+                        Détails
+                      </NavLink>
+                    </Button>
                   </div>
-                </Card>
-              </NavLink>
+                </div>
+              </Card>
             ))}
           </div>
         </div>
