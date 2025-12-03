@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
 import {
   Code2,
   Database,
@@ -8,8 +8,9 @@ import {
   Rocket,
   Settings,
   Users,
-  ChevronDown,
-  ChevronUp,
+  Coffee,
+  FileText,
+  X,
 } from "lucide-react";
 import {
   Accordion,
@@ -17,6 +18,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -252,11 +260,50 @@ const Services = () => {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Contactez-moi pour un devis gratuit et discutons de comment je peux vous aider.
           </p>
-          <NavLink to="/contact">
-            <Button size="lg" className="gradient-accent text-white hover:shadow-glow transition-smooth">
-              Demander un devis
-            </Button>
-          </NavLink>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="lg" className="gradient-accent text-white hover:shadow-glow hover:scale-105 transition-smooth">
+                Me contacter
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md bg-card border-border">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-center mb-4">
+                  Comment puis-je vous aider ?
+                </DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <a href="/contact?type=coffee">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex items-center gap-4 hover:bg-secondary hover:border-accent hover:scale-105 transition-smooth group"
+                  >
+                    <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center group-hover:shadow-glow transition-smooth">
+                      <Coffee className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-lg">Prendre un café</p>
+                      <p className="text-sm text-muted-foreground">Discutons de manière informelle</p>
+                    </div>
+                  </Button>
+                </a>
+                <a href="/contact?type=quote">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex items-center gap-4 hover:bg-secondary hover:border-accent hover:scale-105 transition-smooth group"
+                  >
+                    <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center group-hover:shadow-glow transition-smooth">
+                      <FileText className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-lg">Demander un devis</p>
+                      <p className="text-sm text-muted-foreground">Obtenez une estimation gratuite</p>
+                    </div>
+                  </Button>
+                </a>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </section>
 

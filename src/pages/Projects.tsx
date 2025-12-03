@@ -98,12 +98,6 @@ const Projects = () => {
                     alt={project.title}
                     className="w-full h-64 object-cover group-hover:scale-110 transition-smooth"
                   />
-                  <Badge 
-                    className="absolute top-4 right-4 bg-primary text-primary-foreground"
-                    variant={project.status === "Terminé" ? "default" : "secondary"}
-                  >
-                    {project.status}
-                  </Badge>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-smooth">
