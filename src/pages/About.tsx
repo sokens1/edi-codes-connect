@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Heart, Lightbulb, Users, TrendingUp, GraduationCap, Briefcase } from "lucide-react";
+import { Heart, Lightbulb, Users, TrendingUp, GraduationCap, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 // Photo de profil principale (dans public/)
@@ -66,6 +66,21 @@ const About = () => {
     content: "",
   });
   const [submittingTestimonial, setSubmittingTestimonial] = useState(false);
+  const testimonialsScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollTestimonials = (direction: "left" | "right") => {
+    if (!testimonialsScrollRef.current) return;
+    const scrollAmount = 320; // Largeur d'une carte + gap
+    const currentScroll = testimonialsScrollRef.current.scrollLeft;
+    const newScroll = direction === "left" 
+      ? currentScroll - scrollAmount 
+      : currentScroll + scrollAmount;
+    
+    testimonialsScrollRef.current.scrollTo({
+      left: newScroll,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -287,28 +302,64 @@ const About = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Ce qu'on dit de moi</h2>
-          <div className="max-w-5xl mx-auto overflow-hidden">
+          <div className="max-w-5xl mx-auto relative">
             {testimonials.length > 0 && (
-              <div className="flex gap-6 animate-marquee">
-                {[...testimonials, ...testimonials].map((testimonial, index) => (
-                  <Card
-                    key={`${testimonial.id}-${index}`}
-                    className="min-w-[280px] max-w-sm p-6 bg-card hover:shadow-strong transition-smooth"
+              <>
+                {/* Navigation Buttons */}
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-4 md:-translate-x-12">
+                  <Button
+                    onClick={() => scrollTestimonials("left")}
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full w-10 h-10 bg-background/80 backdrop-blur-sm border-2 border-accent/30 hover:border-accent hover:bg-accent/10 transition-smooth shadow-lg"
+                    aria-label="Défiler vers la gauche"
                   >
-                    <p className="text-muted-foreground italic mb-4 line-clamp-4">
-                      "{testimonial.content}"
-                    </p>
-                    <div className="border-t border-border pt-4">
-                      <p className="font-semibold">{testimonial.author_name}</p>
-                      {testimonial.author_role && (
-                        <p className="text-sm text-muted-foreground">
-                          {testimonial.author_role}
+                    <ChevronLeft className="w-5 h-5 text-accent" />
+                  </Button>
+                </div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-4 md:translate-x-12">
+                  <Button
+                    onClick={() => scrollTestimonials("right")}
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full w-10 h-10 bg-background/80 backdrop-blur-sm border-2 border-accent/30 hover:border-accent hover:bg-accent/10 transition-smooth shadow-lg"
+                    aria-label="Défiler vers la droite"
+                  >
+                    <ChevronRight className="w-5 h-5 text-accent" />
+                  </Button>
+                </div>
+
+                {/* Scrollable Container */}
+                <div 
+                  ref={testimonialsScrollRef}
+                  className="overflow-x-auto scrollbar-hide scroll-smooth"
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                  }}
+                >
+                  <div className="flex gap-6 animate-marquee" style={{ width: "max-content" }}>
+                    {[...testimonials, ...testimonials].map((testimonial, index) => (
+                      <Card
+                        key={`${testimonial.id}-${index}`}
+                        className="min-w-[280px] max-w-sm p-6 bg-card hover:shadow-strong transition-smooth flex-shrink-0"
+                      >
+                        <p className="text-muted-foreground italic mb-4 line-clamp-4">
+                          "{testimonial.content}"
                         </p>
-                      )}
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                        <div className="border-t border-border pt-4">
+                          <p className="font-semibold">{testimonial.author_name}</p>
+                          {testimonial.author_role && (
+                            <p className="text-sm text-muted-foreground">
+                              {testimonial.author_role}
+                            </p>
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
             {testimonials.length === 0 && (
               <p className="text-center text-muted-foreground">
