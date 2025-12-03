@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ecommerceImg from "@/assets/project-ecommerce.jpg";
@@ -10,9 +12,7 @@ import taskManagerImg from "@/assets/project-taskmanager.jpg";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 
 const Projects = () => {
-  const [selectedStatus, setSelectedStatus] = useState("Tout");
-
-  const statuses = ["Tout", "En cours", "Terminé"];
+  const [searchQuery, setSearchQuery] = useState("");
 
   const projects = [
     {
@@ -44,10 +44,11 @@ const Projects = () => {
     },
   ];
 
-  const filteredProjects =
-    selectedStatus === "Tout"
-      ? projects
-      : projects.filter((p) => p.status === selectedStatus);
+  const filteredProjects = projects.filter((p) =>
+    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <div className="min-h-screen">
@@ -65,24 +66,18 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* Filters */}
+      {/* Search Bar */}
       <section className="py-12 bg-background sticky top-16 z-40 border-b border-border shadow-soft">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            {statuses.map((status) => (
-              <Button
-                key={status}
-                onClick={() => setSelectedStatus(status)}
-                variant={selectedStatus === status ? "default" : "outline"}
-                className={
-                  selectedStatus === status
-                    ? "gradient-accent text-white"
-                    : "hover:bg-secondary"
-                }
-              >
-                {status}
-              </Button>
-            ))}
+          <div className="max-w-xl mx-auto relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Rechercher un projet..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-14 text-base bg-card border-border/50 rounded-full shadow-lg focus:shadow-xl focus:border-primary/50 transition-all duration-300"
+            />
           </div>
         </div>
       </section>
