@@ -27,7 +27,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <NavLink to="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-            Edi Soken's
+            Edi Sokens
           </NavLink>
 
           {/* Desktop Navigation */}

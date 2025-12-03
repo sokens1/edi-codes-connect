@@ -22,7 +22,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Edi Soken's</h3>
+            <h3 className="text-lg font-semibold mb-4">Edi Sokens</h3>
             <p className="text-muted-foreground text-sm">
               Développeur Web passionné par la création de solutions numériques élégantes et performantes.
             </p>
@@ -75,7 +75,7 @@ const Footer = () => {
 
         <div className="border-t border-border pt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} Edi Soken's. Tous droits réservés.
+            © {currentYear} Edi Sokens. Tous droits réservés.
           </p>
         </div>
       </div>

@@ -66,7 +66,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background"></div>
         <div className="container mx-auto px-4 relative z-10 text-center animate-scale-up">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-glow-pulse">
-            Edi Soken's
+            Edi Sokens
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4">
             Développeur Web | Créateur de solutions numériques élégantes
@@ -96,7 +96,7 @@ const Home = () => {
             <div className="animate-slide-in-left">
               <img
                 src={profilePhotoUrl}
-                alt="Edi Soken's"
+                alt="Edi Sokens"
                 className="rounded-2xl shadow-strong w-full max-w-md mx-auto hover:shadow-glow hover:scale-105 transition-smooth"
               />
             </div>

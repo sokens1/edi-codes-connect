@@ -183,7 +183,7 @@ const About = () => {
             <div className="animate-fade-in">
               <img
                 src={profilePhotoUrl}
-                alt="Edi Soken's au travail"
+                alt="Edi Sokens au travail"
                 className="rounded-2xl shadow-strong w-full hover:shadow-glow transition-smooth"
               />
             </div>
