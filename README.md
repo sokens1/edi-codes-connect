@@ -1,73 +1,46 @@
-# Welcome to your Lovable project
+# Edi Codes Connect
 
-## Project info
+Portfolio professionnel de Edi Sokenou construit avec React, Tailwind et Supabase.
 
-**URL**: https://lovable.dev/projects/fdf00ed3-aeaa-4e1d-9b2c-2e436a8e0897
+## Prérequis
 
-## How can I edit this code?
+- Node.js 18+
+- npm 9+
 
-There are several ways of editing your application.
+## Installation
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/fdf00ed3-aeaa-4e1d-9b2c-2e436a8e0897) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+git clone <votre-url>
+cd edi-codes-connect
+npm install
 ```
 
-**Edit a file directly in GitHub**
+## Scripts disponibles
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Commande        | Description                                    |
+|-----------------|------------------------------------------------|
+| `npm run dev`   | lance le serveur Vite avec rechargement        |
+| `npm run build` | génère la version de production dans `dist/`   |
+| `npm run preview` | prévisualise la build localement             |
 
-**Use GitHub Codespaces**
+## Technologies principales
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Vite + React 18 + TypeScript
+- TailwindCSS & composants shadcn/ui
+- Supabase (contenu dynamique + formulaires)
 
-## What technologies are used for this project?
+## Structure clé
 
-This project is built with:
+- `src/pages` — pages publiques (Accueil, Services, Projets, Contact…)
+- `src/components` — composants partagés (Header, Footer, UI…)
+- `src/lib/supabaseClient.ts` — initialisation du SDK Supabase
+- `public/` — assets statiques (favicon, manifest…)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Déploiement
 
-## How can I deploy this project?
+1. Construire : `npm run build`
+2. Déployer le dossier `dist/` sur Vercel, Netlify, OVH ou le serveur de votre choix.
 
-Simply open [Lovable](https://lovable.dev/projects/fdf00ed3-aeaa-4e1d-9b2c-2e436a8e0897) and click on Share -> Publish.
+## Contribution
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Les PR sont les bienvenues. Merci de respecter les conventions TypeScript/Tailwind, d’écrire un code clair et de tester avant de soumettre.

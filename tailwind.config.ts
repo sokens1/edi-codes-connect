@@ -120,6 +120,10 @@ export default {
         "bounce-slow": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-20px)" }
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" }
         }
       },
       animation: {
@@ -132,7 +136,8 @@ export default {
         "scale-up": "scale-up 0.5s ease-out",
         "float": "float 3s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
-        "bounce-slow": "bounce-slow 3s ease-in-out infinite"
+        "bounce-slow": "bounce-slow 3s ease-in-out infinite",
+        marquee: "marquee 40s linear infinite"
       },
     },
   },

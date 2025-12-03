@@ -1,8 +1,37 @@
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { Heart, Lightbulb, Users, TrendingUp, GraduationCap, Briefcase } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import profilePhoto from "@/assets/profile-photo.jpg";
+// Photo de profil principale (dans public/)
+const profilePhotoUrl = "/image sokens.jpg";
+import { supabase } from "@/lib/supabaseClient";
+
+type TimelineRow = {
+  id: string;
+  year: string;
+  type: "education" | "work";
+  title: string;
+  description: string | null;
+};
+
+type SkillRow = {
+  id: string;
+  name: string;
+  level: number;
+};
+
+type TestimonialRow = {
+  id: string;
+  author_name: string;
+  author_role: string | null;
+  content: string;
+};
 
 const About = () => {
   const values = [
@@ -28,52 +57,108 @@ const About = () => {
     },
   ];
 
-  const timeline = [
-    {
-      year: "2020",
-      type: "education",
-      icon: GraduationCap,
-      title: "Master en Informatique",
-      description: "Spécialisation en développement web et architectures distribuées.",
-    },
-    {
-      year: "2021",
-      type: "work",
-      icon: Briefcase,
-      title: "Développeur Frontend",
-      description: "Création d'interfaces utilisateur réactives pour des applications SaaS.",
-    },
-    {
-      year: "2022",
-      type: "work",
-      icon: Briefcase,
-      title: "Développeur Fullstack",
-      description: "Développement end-to-end d'applications web complexes avec React et Node.js.",
-    },
-    {
-      year: "2023",
-      type: "work",
-      icon: Briefcase,
-      title: "Lead Developer",
-      description: "Direction technique d'équipe et architecture de solutions cloud-native.",
-    },
-    {
-      year: "2024",
-      type: "work",
-      icon: Briefcase,
-      title: "Consultant Indépendant",
-      description: "Accompagnement de clients dans leurs projets de transformation numérique.",
-    },
-  ];
+  const [timeline, setTimeline] = useState<TimelineRow[]>([]);
+  const [skills, setSkills] = useState<SkillRow[]>([]);
+  const [testimonials, setTestimonials] = useState<TestimonialRow[]>([]);
+  const [testimonialForm, setTestimonialForm] = useState({
+    author_name: "",
+    author_role: "",
+    content: "",
+  });
+  const [submittingTestimonial, setSubmittingTestimonial] = useState(false);
 
-  const skills = [
-    { name: "React & Next.js", level: 95 },
-    { name: "Node.js & Express", level: 90 },
-    { name: "Python & Django", level: 85 },
-    { name: "TypeScript", level: 92 },
-    { name: "Cloud (AWS/Docker)", level: 88 },
-    { name: "UI/UX Design", level: 80 },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const [{ data: timelineData }, { data: skillsData }, { data: testimonialsData }] =
+        await Promise.all([
+          supabase
+            .from("timeline_events")
+            .select("id, year, type, title, description")
+            .order("year", { ascending: true }),
+          supabase
+            .from("skills")
+            .select("id, name, level")
+            .order("level", { ascending: false }),
+          supabase
+            .from("testimonials")
+            .select("id, author_name, author_role, content")
+            .order("created_at", { ascending: false }),
+        ]);
+
+      if (timelineData) {
+        setTimeline(
+          timelineData.map((t) => ({
+            id: t.id as string,
+            year: t.year as string,
+            type: t.type as "education" | "work",
+            title: t.title as string,
+            description: (t.description as string | null) ?? null,
+          }))
+        );
+      }
+
+      if (skillsData) {
+        setSkills(
+          skillsData.map((s) => ({
+            id: s.id as string,
+            name: s.name as string,
+            level: s.level as number,
+          }))
+        );
+      }
+
+      if (testimonialsData) {
+        setTestimonials(
+          testimonialsData.map((t) => ({
+            id: t.id as string,
+            author_name: t.author_name as string,
+            author_role: (t.author_role as string | null) ?? null,
+            content: t.content as string,
+          }))
+        );
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleTestimonialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!testimonialForm.author_name.trim() || !testimonialForm.content.trim()) {
+      toast.error("Merci d'indiquer votre nom et votre témoignage.");
+      return;
+    }
+
+    if (testimonialForm.content.trim().length < 20) {
+      toast.error("Le témoignage doit contenir au moins 20 caractères.");
+      return;
+    }
+
+    setSubmittingTestimonial(true);
+
+    const { error, data } = await supabase
+      .from("testimonials")
+      .insert({
+        author_name: testimonialForm.author_name.trim(),
+        author_role: testimonialForm.author_role.trim() || null,
+        content: testimonialForm.content.trim(),
+      })
+      .select("id, author_name, author_role, content")
+      .single();
+
+    setSubmittingTestimonial(false);
+
+    if (error || !data) {
+      console.error(error);
+      toast.error("Impossible d'enregistrer votre témoignage pour le moment.");
+      return;
+    }
+
+    setTestimonials((prev) => [data as TestimonialRow, ...prev]);
+    setTestimonialForm({ author_name: "", author_role: "", content: "" });
+    toast.success("Merci pour votre témoignage !");
+  };
 
   return (
     <div className="min-h-screen">
@@ -97,8 +182,8 @@ const About = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in">
               <img
-                src={profilePhoto}
-                alt="Edi Sokenou au travail"
+                src={profilePhotoUrl}
+                alt="Edi Soken's au travail"
                 className="rounded-2xl shadow-strong w-full hover:shadow-glow transition-smooth"
               />
             </div>
@@ -129,12 +214,16 @@ const About = () => {
           <div className="max-w-3xl mx-auto">
             {timeline.map((event, index) => (
               <div
-                key={index}
+                key={event.id}
                 className="relative pl-8 pb-12 border-l-2 border-accent/30 last:pb-0 animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="absolute left-0 top-0 -translate-x-1/2 w-12 h-12 rounded-full bg-accent flex items-center justify-center shadow-glow">
-                  <event.icon className="w-6 h-6 text-white" />
+                  {(event.type === "education" ? (
+                    <GraduationCap className="w-6 h-6 text-white" />
+                  ) : (
+                    <Briefcase className="w-6 h-6 text-white" />
+                  ))}
                 </div>
                 <div className="ml-8">
                   <span className="text-sm font-semibold text-accent">{event.year}</span>
@@ -153,7 +242,11 @@ const About = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Compétences Techniques</h2>
           <div className="max-w-2xl mx-auto space-y-6">
             {skills.map((skill, index) => (
-              <div key={skill.name} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
+              <div
+                key={skill.id}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
                 <div className="flex justify-between mb-2">
                   <span className="font-medium">{skill.name}</span>
                   <span className="text-accent font-semibold">{skill.level}%</span>
@@ -194,37 +287,103 @@ const About = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Ce qu'on dit de moi</h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                text: "Edi est un développeur exceptionnel qui livre toujours un travail de qualité dans les délais.",
-                author: "Marie Laurent",
-                role: "Product Manager",
-              },
-              {
-                text: "Sa capacité à comprendre les besoins business et les traduire en solutions techniques est remarquable.",
-                author: "Thomas Dubois",
-                role: "CEO, TechStart",
-              },
-              {
-                text: "Code propre, architecture solide et excellente communication. Un vrai plaisir de travailler avec lui.",
-                author: "Sophie Martin",
-                role: "Tech Lead",
-              },
-            ].map((testimonial, index) => (
-              <Card
-                key={index}
-                className="p-6 hover:shadow-strong transition-smooth animate-fade-in bg-card"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <p className="text-muted-foreground italic mb-4">"{testimonial.text}"</p>
-                <div className="border-t border-border pt-4">
-                  <p className="font-semibold">{testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                </div>
-              </Card>
-            ))}
+          <div className="max-w-5xl mx-auto overflow-hidden">
+            {testimonials.length > 0 && (
+              <div className="flex gap-6 animate-marquee">
+                {[...testimonials, ...testimonials].map((testimonial, index) => (
+                  <Card
+                    key={`${testimonial.id}-${index}`}
+                    className="min-w-[280px] max-w-sm p-6 bg-card hover:shadow-strong transition-smooth"
+                  >
+                    <p className="text-muted-foreground italic mb-4 line-clamp-4">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="border-t border-border pt-4">
+                      <p className="font-semibold">{testimonial.author_name}</p>
+                      {testimonial.author_role && (
+                        <p className="text-sm text-muted-foreground">
+                          {testimonial.author_role}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+            {testimonials.length === 0 && (
+              <p className="text-center text-muted-foreground">
+                Aucun témoignage pour le moment. Soyez le premier à partager votre expérience !
+              </p>
+            )}
           </div>
+          <Card className="max-w-3xl mx-auto mt-12 p-8 bg-card shadow-strong">
+            <h3 className="text-2xl font-bold mb-4 text-center">
+              Partagez votre expérience
+            </h3>
+            <p className="text-muted-foreground text-center mb-6">
+              Laissez un témoignage pour aider les prochains clients à en savoir plus sur ma façon de travailler.
+            </p>
+            <form onSubmit={handleTestimonialSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="testimonial-name">Nom complet *</Label>
+                <Input
+                  id="testimonial-name"
+                  value={testimonialForm.author_name}
+                  onChange={(e) =>
+                    setTestimonialForm((prev) => ({
+                      ...prev,
+                      author_name: e.target.value,
+                    }))
+                  }
+                  placeholder="Ex : Marie Laurent"
+                  required
+                  className="mt-2"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="testimonial-role">Poste / Société</Label>
+                <Input
+                  id="testimonial-role"
+                  value={testimonialForm.author_role}
+                  onChange={(e) =>
+                    setTestimonialForm((prev) => ({
+                      ...prev,
+                      author_role: e.target.value,
+                    }))
+                  }
+                  placeholder="Ex : Product Manager, Startup X"
+                  className="mt-2"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="testimonial-content">Votre avis *</Label>
+                <Textarea
+                  id="testimonial-content"
+                  value={testimonialForm.content}
+                  onChange={(e) =>
+                    setTestimonialForm((prev) => ({
+                      ...prev,
+                      content: e.target.value,
+                    }))
+                  }
+                  placeholder="Décrivez votre collaboration avec Edi (au moins 20 caractères)."
+                  minLength={20}
+                  required
+                  className="mt-2 min-h-[140px]"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={submittingTestimonial}
+                className="w-full gradient-accent text-white hover:shadow-glow"
+              >
+                {submittingTestimonial ? "Envoi en cours..." : "Envoyer mon témoignage"}
+              </Button>
+            </form>
+          </Card>
         </div>
       </section>
 

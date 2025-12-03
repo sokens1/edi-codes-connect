@@ -5,38 +5,38 @@ import { Code2, Database, Cloud, Palette, Rocket, Zap } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import heroBg from "@/assets/hero-bg.jpg";
-import profilePhoto from "@/assets/profile-photo.jpg";
+// Photo de profil principale (dans public/)
+const profilePhotoUrl = "/image sokens.jpg";
 
 const Home = () => {
   const technologies = [
     { name: "React", color: "text-[#61DAFB]" },
+    { name: "Next.js", color: "text-[#2496ED]" },
     { name: "Node.js", color: "text-[#68A063]" },
     { name: "Python", color: "text-[#3776AB]" },
-    { name: "Vue.js", color: "text-[#42B883]" },
-    { name: "Docker", color: "text-[#2496ED]" },
-    { name: "AWS", color: "text-[#FF9900]" },
+    { name: "Vite.js", color: "text-[#42B883]" },
+    // { name: "Docker", color: "text-[#2496ED]" },
+    // { name: "AWS", color: "text-[#FF9900]" },
+    { name: "Figma", color: "text-[#F24E1E]" },
+    { name: "Canva", color: "text-[#00C4CC]" },
   ];
 
   const features = [
     {
       icon: Code2,
-      title: "Frontend Expert",
-      description: "Interfaces modernes et réactives avec React, Vue.js et Next.js",
+      title: "Développement Frontend",
+      description: "Interfaces modernes et réactives avec React, Vite.js et Next.js",
     },
     {
       icon: Database,
-      title: "Backend Robuste",
+      title: "Développement Backend",
       description: "APIs performantes avec Node.js, Python et bases de données optimisées",
     },
     {
-      icon: Cloud,
-      title: "Cloud Native",
-      description: "Déploiement et scaling sur AWS, Docker et architectures serverless",
-    },
-    {
       icon: Palette,
-      title: "Design Moderne",
-      description: "UI/UX élégantes avec Tailwind CSS et design systems",
+      title: "Infographie",
+      description:
+        "Création de visuels (logos, affiches, cartes de visite, magazines...) avec Canva pour votre communication digitale.",
     },
     {
       icon: Rocket,
@@ -66,7 +66,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background"></div>
         <div className="container mx-auto px-4 relative z-10 text-center animate-scale-up">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-glow-pulse">
-            Edi Sokenou
+            Edi Soken's
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4">
             Développeur Web | Créateur de solutions numériques élégantes
@@ -95,8 +95,8 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-in-left">
               <img
-                src={profilePhoto}
-                alt="Edi Sokenou"
+                src={profilePhotoUrl}
+                alt="Edi Soken's"
                 className="rounded-2xl shadow-strong w-full max-w-md mx-auto hover:shadow-glow hover:scale-105 transition-smooth"
               />
             </div>
@@ -123,7 +123,9 @@ const Home = () => {
       {/* Technologies Section */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Technologies Maîtrisées</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Technologies &amp; outils maîtrisés
+          </h2>
           <div className="flex flex-wrap justify-center gap-8 mb-12">
             {technologies.map((tech, index) => (
               <div

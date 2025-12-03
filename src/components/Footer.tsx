@@ -1,13 +1,20 @@
-import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import { Linkedin, Facebook, Mail } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Github, href: "https://github.com", label: "GitHub" },
-    { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: Mail, href: "mailto:edi.sokenou@example.com", label: "Email" },
+    {
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/edi-sokenou-042094331?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      label: "LinkedIn",
+    },
+    {
+      icon: Facebook,
+      href: "https://www.facebook.com/share/1EYYA1WG4n/",
+      label: "Facebook",
+    },
+    { icon: Mail, href: "mailto:edisokenou@gmail.com", label: "Email" },
   ];
 
   return (
@@ -15,7 +22,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Edi Sokenou</h3>
+            <h3 className="text-lg font-semibold mb-4">Edi Soken's</h3>
             <p className="text-muted-foreground text-sm">
               Développeur Web passionné par la création de solutions numériques élégantes et performantes.
             </p>
@@ -68,7 +75,7 @@ const Footer = () => {
 
         <div className="border-t border-border pt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} Edi Sokenou. Tous droits réservés.
+            © {currentYear} Edi Soken's. Tous droits réservés.
           </p>
         </div>
       </div>

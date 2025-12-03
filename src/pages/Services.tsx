@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,9 +8,6 @@ import {
   Rocket,
   Settings,
   Users,
-  Coffee,
-  FileText,
-  X,
 } from "lucide-react";
 import {
   Accordion,
@@ -18,55 +15,53 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { supabase } from "@/lib/supabaseClient";
+
+const iconMap = {
+  Code2,
+  Database,
+  Palette,
+  Rocket,
+  Settings,
+  Users,
+} as const;
+
+type ServiceRow = {
+  id: string;
+  title: string;
+  description: string;
+  icon_name: keyof typeof iconMap | null;
+};
 
 const Services = () => {
-  const services = [
-    {
-      icon: Code2,
-      title: "Développement Frontend",
-      description:
-        "Création d'interfaces modernes et réactives avec React, Vue.js et Next.js. Design responsive et optimisation de performance pour une expérience utilisateur exceptionnelle.",
-    },
-    {
-      icon: Database,
-      title: "Développement Backend",
-      description:
-        "APIs robustes et scalables avec Node.js, Python et bases de données optimisées. Architecture microservices et solutions cloud-native.",
-    },
-    {
-      icon: Palette,
-      title: "UI/UX Design",
-      description:
-        "Design d'interfaces élégantes avec Tailwind CSS et design systems. Prototypage et création de maquettes interactives.",
-    },
-    {
-      icon: Rocket,
-      title: "Développement Fullstack",
-      description:
-        "Solutions end-to-end complètes, de la conception à la mise en production. Gestion de projet et livraison dans les délais.",
-    },
-    {
-      icon: Settings,
-      title: "Conseil Technique",
-      description:
-        "Audit de code, architecture logicielle et recommandations pour optimiser vos projets existants.",
-    },
-    {
-      icon: Users,
-      title: "Formation & Mentoring",
-      description:
-        "Accompagnement d'équipes de développement et formation sur les technologies modernes et best practices.",
-    },
-  ];
+  const [services, setServices] = useState<ServiceRow[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, title, description, icon_name")
+        .order("title", { ascending: true });
+
+      if (!error && data) {
+        setServices(
+          data.map((row) => ({
+            id: row.id as string,
+            title: row.title as string,
+            description: row.description as string,
+            icon_name: (row.icon_name as keyof typeof iconMap | null) ?? null,
+          }))
+        );
+      }
+
+      setLoadingServices(false);
+    };
+
+    fetchServices();
+  }, []);
 
   const workflow = [
     {
@@ -101,42 +96,9 @@ const Services = () => {
     },
   ];
 
-  const faqs = [
-    {
-      question: "Quel est votre délai de livraison moyen ?",
-      answer:
-        "Les délais varient selon la complexité du projet. Un site vitrine peut être livré en 2-3 semaines, tandis qu'une application complexe peut prendre 2-3 mois. Je fournis toujours une estimation détaillée après analyse de vos besoins.",
-    },
-    {
-      question: "Travaillez-vous avec des clients internationaux ?",
-      answer:
-        "Absolument ! J'ai l'habitude de travailler avec des clients francophones et anglophones dans différents fuseaux horaires. La communication se fait via visioconférence, email et outils de gestion de projet.",
-    },
-    {
-      question: "Proposez-vous de la maintenance après livraison ?",
-      answer:
-        "Oui, je propose différentes formules de maintenance : corrections de bugs, mises à jour de sécurité, ajout de nouvelles fonctionnalités. Nous pouvons établir un contrat adapté à vos besoins.",
-    },
-    {
-      question: "Quelles sont vos modalités de paiement ?",
-      answer:
-        "Je travaille généralement avec un acompte de 30% au démarrage, 40% à mi-parcours et 30% à la livraison. Pour les projets au long cours, nous pouvons établir un paiement mensuel.",
-    },
-    {
-      question: "Fournissez-vous le code source ?",
-      answer:
-        "Oui, vous recevez l'intégralité du code source avec la documentation technique. Vous êtes propriétaire de votre projet.",
-    },
-  ];
+  const faqs: { question: string; answer: string }[] = [];
 
-  const benefits = [
-    "Expertise technique approfondie et veille technologique constante",
-    "Communication transparente et réponses rapides",
-    "Code propre, documenté et maintenable",
-    "Respect des délais et du budget",
-    "Approche centrée sur l'utilisateur final",
-    "Tests rigoureux et assurance qualité",
-  ];
+  const benefits: string[] = [];
 
   return (
     <div className="min-h-screen">
@@ -158,17 +120,36 @@ const Services = () => {
       <section className="py-20 gradient-subtle">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={service.title}
-                className="p-8 hover:shadow-strong transition-smooth animate-fade-in bg-card"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <service.icon className="w-12 h-12 text-accent mb-6" />
-                <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-                <p className="text-muted-foreground">{service.description}</p>
-              </Card>
-            ))}
+            {loadingServices && (
+              <p className="text-center text-muted-foreground col-span-full">
+                Chargement des services...
+              </p>
+            )}
+            {!loadingServices && services.length === 0 && (
+              <p className="text-center text-muted-foreground col-span-full">
+                Aucun service disponible pour le moment.
+              </p>
+            )}
+            {!loadingServices &&
+              services.map((service, index) => {
+                const Icon =
+                  (service.icon_name &&
+                    iconMap[service.icon_name as keyof typeof iconMap]) ||
+                  Code2;
+                return (
+                  <Card
+                    key={service.id}
+                    className="p-8 hover:shadow-strong transition-smooth animate-fade-in bg-card"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <Icon className="w-12 h-12 text-accent mb-6" />
+                    <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
+                    <p className="text-muted-foreground">
+                      {service.description}
+                    </p>
+                  </Card>
+                );
+              })}
           </div>
         </div>
       </section>
@@ -201,55 +182,65 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Why Work With Me */}
-      <section className="py-20 gradient-subtle">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Pourquoi Travailler avec Moi</h2>
-          <div className="max-w-3xl mx-auto">
-            <Card className="p-8 bg-card shadow-strong">
-              <ul className="space-y-4">
-                {benefits.map((benefit, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <span className="w-6 h-6 rounded-full gradient-accent flex-shrink-0 flex items-center justify-center mt-0.5">
-                      <span className="text-white text-xs">✓</span>
-                    </span>
-                    <span className="text-muted-foreground text-lg">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
+      {/* Why Work With Me - contenu désormais piloté par la base (section désactivée si vide) */}
+      {benefits.length > 0 && (
+        <section className="py-20 gradient-subtle">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Pourquoi Travailler avec Moi
+            </h2>
+            <div className="max-w-3xl mx-auto">
+              <Card className="p-8 bg-card shadow-strong">
+                <ul className="space-y-4">
+                  {benefits.map((benefit, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 animate-fade-in"
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                    >
+                      <span className="w-6 h-6 rounded-full gradient-accent flex-shrink-0 flex items-center justify-center mt-0.5">
+                        <span className="text-white text-xs">✓</span>
+                      </span>
+                      <span className="text-muted-foreground text-lg">
+                        {benefit}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* FAQ Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Questions Fréquentes</h2>
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="border border-border rounded-lg px-6 bg-card"
-                >
-                  <AccordionTrigger className="text-left font-semibold hover:text-accent">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pt-2">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+      {/* FAQ Section - désactivée tant qu'elle n'est pas alimentée par la base */}
+      {faqs.length > 0 && (
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Questions Fréquentes
+            </h2>
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <AccordionItem
+                    key={index}
+                    value={`item-${index}`}
+                    className="border border-border rounded-lg px-6 bg-card"
+                  >
+                    <AccordionTrigger className="text-left font-semibold hover:text-accent">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pt-2">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 gradient-subtle">
@@ -260,50 +251,11 @@ const Services = () => {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Contactez-moi pour un devis gratuit et discutons de comment je peux vous aider.
           </p>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" className="gradient-accent text-white hover:shadow-glow hover:scale-105 transition-smooth">
-                Me contacter
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md bg-card border-border">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold text-center mb-4">
-                  Comment puis-je vous aider ?
-                </DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <a href="/contact?type=coffee">
-                  <Button
-                    variant="outline"
-                    className="w-full h-20 flex items-center gap-4 hover:bg-secondary hover:border-accent hover:scale-105 transition-smooth group"
-                  >
-                    <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center group-hover:shadow-glow transition-smooth">
-                      <Coffee className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-semibold text-lg">Prendre un café</p>
-                      <p className="text-sm text-muted-foreground">Discutons de manière informelle</p>
-                    </div>
-                  </Button>
-                </a>
-                <a href="/contact?type=quote">
-                  <Button
-                    variant="outline"
-                    className="w-full h-20 flex items-center gap-4 hover:bg-secondary hover:border-accent hover:scale-105 transition-smooth group"
-                  >
-                    <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center group-hover:shadow-glow transition-smooth">
-                      <FileText className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-semibold text-lg">Demander un devis</p>
-                      <p className="text-sm text-muted-foreground">Obtenez une estimation gratuite</p>
-                    </div>
-                  </Button>
-                </a>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <a href="/contact">
+            <Button size="lg" className="gradient-accent text-white hover:shadow-glow hover:scale-105 transition-smooth">
+              Me contacter
+            </Button>
+          </a>
         </div>
       </section>
 

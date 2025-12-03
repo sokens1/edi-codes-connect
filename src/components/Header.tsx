@@ -2,9 +2,17 @@ import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import ContactForm from "@/components/ContactForm";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [coffeeDialogOpen, setCoffeeDialogOpen] = useState(false);
 
   const navLinks = [
     { to: "/", label: "Accueil" },
@@ -19,7 +27,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <NavLink to="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-            Edi Sokenou
+            Edi Soken's
           </NavLink>
 
           {/* Desktop Navigation */}
@@ -39,11 +47,12 @@ const Header = () => {
                 {link.label}
               </NavLink>
             ))}
-            <NavLink to="/contact">
-              <Button className="gradient-accent text-white hover:shadow-glow transition-smooth">
-                Prendre un café
-              </Button>
-            </NavLink>
+            <Button
+              className="gradient-accent text-white hover:shadow-glow transition-smooth"
+              onClick={() => setCoffeeDialogOpen(true)}
+            >
+              Prendre un café
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -75,13 +84,29 @@ const Header = () => {
                 {link.label}
               </NavLink>
             ))}
-            <NavLink to="/contact" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="w-full gradient-accent text-white">
-                Prendre un café
-              </Button>
-            </NavLink>
+            <Button
+              className="w-full gradient-accent text-white"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setCoffeeDialogOpen(true);
+              }}
+            >
+              Prendre un café
+            </Button>
           </div>
         )}
+
+        {/* Global "Prendre un café" Dialog */}
+        <Dialog open={coffeeDialogOpen} onOpenChange={setCoffeeDialogOpen}>
+          <DialogContent className="sm:max-w-lg bg-card border-border">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">
+                Envoyez-moi un message
+              </DialogTitle>
+            </DialogHeader>
+            <ContactForm className="space-y-6 mt-4" />
+          </DialogContent>
+        </Dialog>
       </nav>
     </header>
   );
