@@ -98,7 +98,7 @@ const Header = () => {
 
         {/* Global "Prendre un café" Dialog */}
         <Dialog open={coffeeDialogOpen} onOpenChange={setCoffeeDialogOpen}>
-          <DialogContent className="sm:max-w-lg bg-card border-border">
+          <DialogContent className="sm:max-w-lg w-[95vw] max-h-[90vh] overflow-y-auto bg-card border-border">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">
                 Envoyez-moi un message

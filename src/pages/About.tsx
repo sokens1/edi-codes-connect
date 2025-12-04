@@ -226,7 +226,8 @@ const About = () => {
       <section className="py-20 gradient-subtle">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Mon Parcours</h2>
-          <div className="max-w-3xl mx-auto">
+          {/* Alignée clairement vers la droite, surtout sur mobile */}
+          <div className="max-w-3xl ml-auto mr-2 sm:mr-4 lg:mr-12">
             {timeline.map((event, index) => (
               <div
                 key={event.id}
