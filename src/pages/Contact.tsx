@@ -111,7 +111,7 @@ const Contact = () => {
               <Card className="p-6 bg-accent text-white">
                 <p className="text-lg font-medium mb-2">Au plaisir de collaborer avec vous !</p>
                 <p className="text-white/90">
-                  Je réponds généralement dans les 24 heures. Pour les projets urgents, 
+                  Je réponds généralement dans les 24 heures, 
                   n'hésitez pas à me contacter directement par téléphone.
                 </p>
               </Card>
